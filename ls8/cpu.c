@@ -53,12 +53,37 @@ void cpu_run(struct cpu *cpu)
   {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
+
+    int instruction = cpu_ram_read(cpu, cpu->PC);
+
+    unsigned int total_operands = instruction >> 6;
     // 2. Figure out how many operands this next instruction requires
+
+    switch (instruction)
+    {
+    case 0b10000010: //LDI
+      int operandA = cpu_ram_read(cpu, cpu->PC + 1);
+      int operandB = cpu_ram_read(cpu, cpu->PC + 2);
+      break;
+    case 0b01000111: //PRN
+      int operandA = cpu_ram_read(cpu, cpu->PC + 1);
+      printf("%s\n", cpu->registers[operandA]);
+      break;
+    case 0b00000001: //HLT
+      running = 0;
+      break;
+    default:
+      printf("ERROR: invalid instruction.\n");
+      exit(1);
+    };
+
     // 3. Get the appropriate value(s) of the operands following this instruction
+
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
     // 6. Move the PC to the next instruction.
-  }
+    cpu->PC += total_operands + 1;
+    }
 }
 
 /**
@@ -72,9 +97,11 @@ void cpu_init(struct cpu *cpu)
   memset(cpu->registers, 0, 256 * sizeof(unsigned char));
 }
 
-void cpu_ram_read()
+int cpu_ram_read(struct cpu *cpu, int index)
 {
+  return cpu->ram[index];
 }
-void cpu_ram_write()
+void cpu_ram_write(struct cpu *cpu, int index, int value)
 {
+  cpu->ram[index] = value;
 }
