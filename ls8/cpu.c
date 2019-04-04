@@ -8,17 +8,20 @@
 unsigned int cpu_ram_read(struct cpu *cpu, unsigned char index)
 {
   return cpu->ram[index];
+  printf("This is read.\n");
 }
 void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char val)
 {
+  printf("This is write.\n");
   cpu->ram[index] = val;
 }
 
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
-void cpu_load(struct cpu *cpu, int argc, char **argv)
+void cpu_load(struct cpu *cpu, char *filename)
 {
+  printf("This is load.\n");
   // char data[DATA_LEN] = {
   //     // From print8.ls8
   //     0b10000010, // LDI R0,8
@@ -32,21 +35,13 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   FILE *fp;
   char line[1048];
 
-  int address = 0;
-  if (argc != 2)
-  {
-    printf("usage: fileio filename\n");
-    //return 1;
-  }
+  int address = base_address;
 
-  // for (int i = 0; i < DATA_LEN; i++)
-  // {
-  //   cpu->ram[address++] = data[i];
-  // }
-  fp = fopen(argv[1], "r");
+  fp = fopen(filename, "r");
   if (fp == NULL)
   {
-    printf("Error opening file %s\n", argv[1]);
+    printf("Error opening file %s\n", filename);
+    exit(2);
     //return 2;
   }
 
@@ -54,8 +49,24 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   {
     char *endptr;
     unsigned char val = (strtoul(line, &endptr, 2));
+
+    if (line == endptr)
+    {
+      continue;
+    }
     cpu_ram_write(cpu, address++, val);
   }
+
+  // if (argc != 2)
+  // {
+  //   printf("usage: fileio filename\n");
+  //   //return 1;
+  // }
+
+  // for (int i = 0; i < DATA_LEN; i++)
+  // {
+  //   cpu->ram[address++] = data[i];
+  // }
 
   // TODO: Replace this with something less hard-coded
 }
@@ -92,6 +103,7 @@ void cpu_run(struct cpu *cpu)
     operandA = cpu_ram_read(cpu, cpu->PC + 1);
     operandB = cpu_ram_read(cpu, cpu->PC + 2);
     unsigned int total_operands = instruction >> 6;
+    printf("%u, %c, %c\n", instruction, operandA, operandB);
     // 2. Figure out how many operands this next instruction requires
 
     if (total_operands > 0)
@@ -151,6 +163,6 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
-  memset(cpu->ram, 0, 8 * sizeof(unsigned char));
-  memset(cpu->registers, 0, 256 * sizeof(unsigned char));
+  memset(cpu->ram, 0, 256 * sizeof(unsigned char));
+  memset(cpu->registers, 0, 8 * sizeof(unsigned char));
 }
