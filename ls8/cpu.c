@@ -9,7 +9,7 @@ unsigned int cpu_ram_read(struct cpu *cpu, unsigned char index)
 {
   return cpu->ram[index];
 }
-void cpu_ram_write(struct cpu *cpu, unsigned char index)
+void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char val)
 {
   cpu->ram[index] = index;
 }
@@ -32,7 +32,7 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   FILE *fp;
   char line[1048];
 
-  // int address = 0;
+  int address = 0;
   if (argc != 2)
   {
     printf("usage: fileio filename\n");
@@ -54,6 +54,7 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   {
     char *endptr;
     unsigned char val = (strtoul(line, &endptr, 2));
+    cpu_ram_write(cpu, address++, val);
   }
 
   // TODO: Replace this with something less hard-coded
