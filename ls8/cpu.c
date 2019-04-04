@@ -11,7 +11,7 @@ unsigned int cpu_ram_read(struct cpu *cpu, unsigned char index)
 }
 void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char val)
 {
-  cpu->ram[index] = index;
+  cpu->ram[index] = val;
 }
 
 /**
@@ -36,7 +36,7 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   if (argc != 2)
   {
     printf("usage: fileio filename\n");
-    return 1;
+    //return 1;
   }
 
   // for (int i = 0; i < DATA_LEN; i++)
@@ -47,7 +47,7 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   if (fp == NULL)
   {
     printf("Error opening file %s\n", argv[1]);
-    return 2;
+    //return 2;
   }
 
   while (fgets(line, 1048, fp) != NULL)
@@ -93,29 +93,54 @@ void cpu_run(struct cpu *cpu)
     operandB = cpu_ram_read(cpu, cpu->PC + 2);
     unsigned int total_operands = instruction >> 6;
     // 2. Figure out how many operands this next instruction requires
+
+    if (total_operands > 0)
+    {
+      operandA = cpu_ram_read(cpu, cpu->PC + 1);
+    }
+    if (total_operands > 1)
+    {
+      operandB = cpu_ram_read(cpu, cpu->PC + 2);
+    }
     switch (instruction)
     {
-    case 0b10000010: //LDI
-      printf("Operands: %d %d\n", operandA, operandB);
+    case LDI:
       cpu->registers[operandA] = operandB;
       break;
-    case 0b01000111: //PRN
+
+    case PRN:
       printf("%d\n", cpu->registers[operandA]);
       break;
-    case 0b00000001: //HLT
+
+    case HLT:
       running = 0;
       break;
+
     default:
-      printf("ERROR: invalid instruction.\n");
-      exit(1);
-    };
-    printf("register 0: %d\n", cpu->registers[0]);
+      break;
+    }
+    cpu->PC += total_operands + 1;
+    // {
+    // case 0b10000010: //LDI
+    //   printf("Operands: %d %d\n", operandA, operandB);
+    //   cpu->registers[operandA] = operandB;
+    //   break;
+    // case 0b01000111: //PRN
+    //   printf("%d\n", cpu->registers[operandA]);
+    //   break;
+    // case 0b00000001: //HLT
+    //   running = 0;
+    //   break;
+    // default:
+    //   printf("ERROR: invalid instruction.\n");
+    //   exit(1);
+    // };
+    // printf("register 0: %d\n", cpu->registers[0]);
     // 3. Get the appropriate value(s) of the operands following this instruction
 
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
     // 6. Move the PC to the next instruction.
-    cpu->PC += total_operands + 1;
   }
 }
 
