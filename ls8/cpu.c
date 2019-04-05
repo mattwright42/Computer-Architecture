@@ -144,6 +144,10 @@ void cpu_run(struct cpu *cpu)
       cpu_ram_write(cpu, cpu->registers[7], cpu->registers[operandA]);
       break;
 
+    case ST:
+      cpu_ram_write(cpu, cpu->registers[operandA], cpu->registers[operandB]);
+      break;
+
     default:
       //break;
       alu(cpu, instruction, operandA, operandB);

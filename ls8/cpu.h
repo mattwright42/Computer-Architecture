@@ -33,6 +33,7 @@ enum alu_op
 #define PRN 0b01000111
 #define POP 0b01000110
 #define PUSH 0b01000101
+#define ST 0b10000100
 // TODO: more instructions here. These can be used in cpu_run().
 #define base_address 0x00
 // Function declarations
