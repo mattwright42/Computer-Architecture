@@ -80,6 +80,11 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   {
   case ALU_MUL:
     // TODO
+    cpu->registers[regA] = cpu->registers[regA] * cpu->registers[regB];
+    break;
+  default:
+    fprintf(stderr, "Operation unrecognized\n");
+    //exit(1);
     break;
 
     // TODO: implement more ALU ops
@@ -129,7 +134,8 @@ void cpu_run(struct cpu *cpu)
       break;
 
     default:
-      break;
+      //break;
+      alu(cpu, instruction, operandA, operandB);
     }
     cpu->PC += total_operands + 1;
     // {
