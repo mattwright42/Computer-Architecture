@@ -138,6 +138,12 @@ void cpu_run(struct cpu *cpu)
       cpu->registers[7]++;
       break;
 
+    case PUSH:
+      cpu->registers[7]--;
+      cpu->registers[operandA];
+      cpu_ram_write(cpu, cpu->registers[7], cpu->registers[operandA]);
+      break;
+
     default:
       //break;
       alu(cpu, instruction, operandA, operandB);
