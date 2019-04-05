@@ -133,6 +133,11 @@ void cpu_run(struct cpu *cpu)
       running = 0;
       break;
 
+    case POP:
+      cpu->registers[operandA] = cpu_ram_read(cpu, cpu->registers[7]);
+      cpu->registers[7]++;
+      break;
+
     default:
       //break;
       alu(cpu, instruction, operandA, operandB);
