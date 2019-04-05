@@ -8,11 +8,11 @@
 unsigned int cpu_ram_read(struct cpu *cpu, unsigned char index)
 {
   return cpu->ram[index];
-  printf("This is read.\n");
+  //printf("This is read.\n");
 }
 void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char val)
 {
-  printf("This is write.\n");
+  //printf("This is write.\n");
   cpu->ram[index] = val;
 }
 
@@ -21,7 +21,7 @@ void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char val)
  */
 void cpu_load(struct cpu *cpu, char *filename)
 {
-  printf("This is load.\n");
+  //printf("This is load.\n");
   // char data[DATA_LEN] = {
   //     // From print8.ls8
   //     0b10000010, // LDI R0,8
@@ -108,7 +108,7 @@ void cpu_run(struct cpu *cpu)
     operandA = cpu_ram_read(cpu, cpu->PC + 1);
     operandB = cpu_ram_read(cpu, cpu->PC + 2);
     unsigned int total_operands = instruction >> 6;
-    printf("%u, %c, %c\n", instruction, operandA, operandB);
+    //printf("%u, %c, %c\n", instruction, operandA, operandB);
     // 2. Figure out how many operands this next instruction requires
 
     if (total_operands > 0)
